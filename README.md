@@ -1,242 +1,140 @@
-# secondTask c++
-Нормальный конструктор вызывается, когда мы инициализируем новые объекты Number
-```c++
-    Number n1(1);
-    Number n2(2);
-```
-Оператор копирования присваивания вызывается, когда правой стороной операции присваивания является lvalue (хранящийся в памяти, а не временный)
-```c++
-    n1 = n2;
-```
-Оператор перемещения присваивания вызывается, когда правой стороной операции присваивания является временное rvalue, которое собирается уничтожить
-```c++
-    Number n3;
-    n3= Number(2);
-```
-Конструктор копирования вызывается, когда элементы добавляются в вектор в функции processVector, потому что создается копия члена класса, который добавляется, когда мы выполняем инструкцию pushback.
-```c++
-        Number num = Number(a);
-        numbers.push_back(num);
-```
-Конструктор перемещения вызывается, когда добавляется более одного элемента в вектор, так как функция pushback, вероятно, не находит достаточно места в текущем векторе для выделения нового элемента, и поэтому создается новая копия с большими размерами, и старые элементы перемещаются в новую память.
-```c++
-        Number num = Number(a);
-        numbers.push_back(num);
-```
-Деструктор вызывается, когда мы удаляем члены класса или каждый раз, когда временные члены класса уничтожаются.
-Функция, используемая для обработки векторов
-```c++
-   void procesVector(std::vector<Number> numbers, int len) {
-    if (len > 10 || len < 5) return;
-    for (int i = 0; i < len; i++) {
-        int a;
-        std::cin >> a ;
-        Number num = Number(a);
+# Third Task c++
 
-        numbers.push_back(num);
-    }
-    for (Number num : numbers) {
-        print(num);
+## Цель работы
+Основная цель этого задания заключается в реализации различных операций над векторами на c++. Задача включает в себя создание и манипулирование контейнерами (векторами и списками) и использование алгоритмов для решения конкретных проблем, связанных с коллекциями объектов пользовательского класса `Number`. Основное внимание уделяется выполнению этих задач с минимальным количеством кода и без ненужных операций.
 
-    }
+## Разделение задач и реализация кода
 
-}
-```
-Функция, используемая для обработки списков
-```c++
-void procesList(std::list<Number> numbers, int len) {
-    if (len > 10 || len < 5) return;
-    for (int i = 0; i < len; i++) {
-        int a;
-        std::cin >> a ;
-        Number num = Number(a);
-        numbers.push_back(num);
-    }
-    for (Number num : numbers) {
-        print(num);
+### 1. Создать вектор v1 со случайными значениями
+Первый шаг включает создание вектора `v1` со случайным размером от 500 до 1000, заполненного экземплярами класса `Number`. Значения этих экземпляров генерируются случайным образом.
 
-    }
-
-}
-```
-переопределение оператора сложения
-```c++
-Number& Number::operator + (const Number& number) {
-    if (this != &number) {
-        number_value += number.number_value;
-        number_name = translate(number_value);
-    }
-    std::cout << "addition copy operator" << std::endl;
-
-    return *this;
-
-}
-// addition move operator 
-
-Number& Number::operator +(const Number&& number) noexcept {
-    if (this != &number) {
-
-        number_value += number.number_value;
-        number_name = translate(number_value);
-        //number_name = std::move(number.number_name);
-    }
-    std::cout << "addition move operator" << std::endl;
-
-    return *this;
-}
-```
-Передача членов класса и возврат их, как по ссылке, так и без
-```c++
-Number add(Number num1, Number num2) {
-    return num1+num2;
-}
-Number& addByreference(Number & num1, Number &num2) {
-
-    return num1+num2;
-}
-```
-чтобы перевести цифры в слова
-```c++
-
-string translate(int num) {
-    if (num == 0) {
-        return "zero";
-    }
-
-    std::vector<std::string> belowTwenty = {
-        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
-        "seventeen", "eighteen", "nineteen"
-    };
-    std::vector<std::string> tens = {
-        "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
-    };
-
-    std::string words = "";
-
-    if (num >= 1000) {
-        words += belowTwenty[num / 1000] + " thousand ";
-        num %= 1000;
-    }
-
-    if (num >= 100) {
-        words += belowTwenty[num / 100] + " hundred ";
-        num %= 100;
-    }
-
-    if (num >= 20) {
-        words += tens[num / 10] + " ";
-        num %= 10;
-    }
-
-    if (num > 0) {
-        words += belowTwenty[num] + " ";
-    }
-
-    return words.substr(0, words.size() - 1); // Remove the trailing space
-}
+```cpp
+vector<Number> v1 = createV1();
 ```
 
-** для определения, пожалуйста, смотрите Number.h
-** для реализации, пожалуйста, смотрите Number.cpp
-** для файла, использующего класс Number, пожалуйста, смотрите secondTaskc++.cpp
-
-## консольный вывод
-```none
-Normal constructor
-Normal constructor
-assigmenet copy operator
-Copy constructor
-Copy constructor
-addition copy operator
-Copy constructor
-destructor
-destructor
-4 four
-destructor
-Normal constructor
-Copy constructor
-2 two
-destructor
-2 two
-destructor
-5
-100
-Normal constructor
-Copy constructor
-destructor
-22
-Normal constructor
-Copy constructor
-Move constructor
-destructor
-destructor
-34
-Normal constructor
-Copy constructor
-Move constructor
-Move constructor
-destructor
-destructor
-destructor
-66
-Normal constructor
-Copy constructor
-Move constructor
-Move constructor
-Move constructor
-destructor
-destructor
-destructor
-destructor
-101
-Normal constructor
-Copy constructor
-Move constructor
-Move constructor
-Move constructor
-Move constructor
-destructor
-destructor
-destructor
-destructor
-destructor
-Copy constructor
-Copy constructor
-100 one hundred
-destructor
-destructor
-Copy constructor
-Copy constructor
-22 twenty two
-destructor
-destructor
-Copy constructor
-Copy constructor
-34 thirty four
-destructor
-destructor
-Copy constructor
-Copy constructor
-66 sixty six
-destructor
-destructor
-Copy constructor
-Copy constructor
-101 one hundred one
-destructor
-destructor
-destructor
-destructor
-destructor
-destructor
-destructor
-destructor
-destructor
-
-C:\Users\D34\Source\Repos\secondTask-c-\x64\Debug\secondTask c++.exe (process 10568) exited with code 0.
-To automatically close the console when debugging stops, enable Tools->Options->Debugging->Automatically close the console when debugging stops.
-Press any key to close this window . . .
-
+**Вывод:**
+```
+#1 size of v1 is :852
 ```
 
+### 2. Создать вектор v2 с последними 200 элементами v1
+На этом этапе создается новый вектор `v2`, который содержит элементы из `v1`, начиная с случайной позиции `b` до `e`, где `e` является концом `v1`.
+
+```cpp
+vector<Number> v2 = createV2(v1);
+```
+
+**Вывод:**
+```
+#2 Vector v2 created to begin at 69 and end at 120 size 51 of the original v1.
+```
+
+### 3. Создать list1 с первыми n элементами из v1
+Здесь список `list1` формируется путем копирования первых `n` наибольших элементов из `v1`, отсортированных по убыванию.
+
+```cpp
+vector<Number> list1 = createList1(v1);
+```
+
+**Вывод:**
+```
+#3 list 1 is created with 33 elements
+```
+
+### 4. Создать list2 с последними n элементами из v2
+На этом этапе создается список `list2`, который копирует последние `n` наименьших элементов из `v2`. Порядок элементов не имеет значения.
+
+```cpp
+vector<Number> list2 = createList2(v2);
+```
+
+**Вывод:**
+```
+#4 list 2 is created with 33 elements
+```
+
+### 5. Удалить перемещенные элементы из v1 и v2
+Этот шаг включает удаление элементов, которые были перемещены в `list1` и `list2`, из исходных векторов `v1` и `v2`, а также корректировку их размеров.
+
+```cpp
+v1.erase(v1.begin(), v1.begin() + list1.size());
+v2.erase(v2.end() - list2.size(), v2.end());
+```
+
+**Вывод:**
+```
+#5 v1 size before the erase 852
+v1 size after the erase 819
+v2 size before the erase 51
+v2 size after the erase 18
+```
+
+### 6. Переставить list1 на основе среднего значения
+На этом этапе мы находим среднее значение чисел в `list1` и переставляем элементы так, чтобы те, которые больше среднего, шли перед теми, которые меньше или равны среднему.
+
+```cpp
+sort(list1.begin(), list1.end(), [](const Number& low, const Number& high) {
+    return low.getNumberValue() < high.getNumberValue();
+});
+```
+
+**Вывод:**
+```
+#6 rearranged
+```
+
+### 7. Удалить нечетные элементы из list1
+Здесь мы фильтруем нечетные числа из `list1`.
+
+```cpp
+RemoveOdd(list1);
+```
+
+**Вывод:**
+```
+#7 size of list 1 with odd elements: 33
+size of list 1 after removing odd elements: 13
+```
+
+### 8. Создать v3 из общих элементов v1 и v2
+Этот шаг включает создание вектора `v3`, который содержит элементы, присутствующие как в `v1`, так и в `v2`.
+
+```cpp
+vector<Number> v3 = createV3(v1, v2);
+```
+
+**Вывод:**
+```
+#8 from v1 of size 819 and v2 of size 18, v3 created of size 18
+```
+
+### 9. Создать list3 из пар элементов из list1 и list2
+На этом этапе мы удаляем лишние элементы из большего из двух списков (`list1` или `list2`), чтобы сделать их размеры равными, а затем создаем список пар из их элементов.
+
+```cpp
+vector<pair<Number, Number>> list3 = createList3(list1, list2);
+```
+
+**Вывод:**
+```
+#9 before errase size of list1 13 and of list2 33
+ after errase size of list1 13 and of list2 13
+ and size of the created list3 13
+```
+
+### 10. Создать v4 из пар элементов из v1 и v2
+Наконец, мы создаем вектор `v4`, содержащий пары из `v1` и `v2` без предварительной корректировки их размеров.
+
+```cpp
+vector<pair<Number, Number>> v4 = createV4(v1, v2);
+```
+
+**Вывод:**
+```
+#10 before creating v4 size of v1 819 and of v2 18
+ after creating v4 size of v1 819 and of v2 18
+ and size of the created v4 18
+```
+
+## Заключение
+Предоставленная реализация эффективно решает каждое требование, изложенное в описании задачи, при этом соблюдая лучшие практики в кодировании и проектировании алгоритмов.
